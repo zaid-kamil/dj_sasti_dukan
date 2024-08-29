@@ -1,0 +1,6 @@
+django
+django-filter
+django-browser-reload
+crispy-bootstrap5
+django-allauth
+stripe
