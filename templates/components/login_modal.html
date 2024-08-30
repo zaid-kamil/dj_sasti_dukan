@@ -1,0 +1,27 @@
+<div class="modal fade" id="showLogin" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="showLoginLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="showLoginLabel">Authenticate Yourself</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <a href="{% url 'customer_login' %}" class="btn btn-outline-success w-100 mb-3">
+                    <i class="fas fa-user"></i>
+                    Login as Customer
+                </a>
+                <a href="{% url 'seller_login' %}" class="btn btn-outline-primary w-100 mb-3">
+                    <i class="fas fa-user"></i>
+                    Login as Seller
+                </a>
+                <a href="{% url 'admin:index' %}" class="btn btn-outline-primary w-100 mb-3">
+                    <i class="fas fa-user"></i>
+                    Login as Admin
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+</div>

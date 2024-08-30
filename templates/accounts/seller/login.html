@@ -4,13 +4,45 @@
 {% block head %}{% endblock %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <form method="post" class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4 class="card-title">Seller Login</h4>
+                </div>
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" name="username" id="username"
+                            placeholder="Raju Srivastava" />
+                        <label for="username">Username</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" name="password" id="password" placeholder="Password" />
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary w-100">Login</button>
+                        <a href="{% url 'seller_register' %}" class="btn btn-link w-100 text-decoration-none">Dont Have a seller Account? Register</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block css %}
-<style></style>
+<style>
+    main{
+        display: grid;
+        place-items: center;
+        height: 100vh;
+    }
+</style>
 {% endblock %}
 
 {% block js %}
 <script></script>
 {% endblock %}
-    

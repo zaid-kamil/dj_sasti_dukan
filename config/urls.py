@@ -30,6 +30,7 @@ urlpatterns = [
     path('login/seller', mv.seller_login_view, name='seller_login'),
     path('register/seller', mv.seller_register_view, name='seller_register'),
     path('forgot/seller', mv.seller_forgot_pass_view, name='seller_forgot_pass'),
+    # common to both
     path('logout', mv.logout_view, name='logout'),
     # index
     path('', mv.home_view, name='home'),
