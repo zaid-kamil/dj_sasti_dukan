@@ -1,9 +1,26 @@
 {% extends 'layout/base_fullscreen.html' %}
 {% load static %}
+{% load socialaccount %} 
 
 {% block head %}{% endblock %}
 
 {% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        Login as Customer
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <a href="{% provider_login_url "github" %}">Github</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block css %}
