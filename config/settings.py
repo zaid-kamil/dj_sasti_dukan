@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # local apps
     'main',
     'product',
+    'cart',
     # 3rd party apps    
     "django_browser_reload",
     'allauth',
