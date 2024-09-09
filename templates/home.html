@@ -1,8 +1,52 @@
 {% extends 'layout/base.html' %}
-
 {% block head %}{% endblock %}
 {% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12 bg-body-secondary">
+            <h1 class="text-center">Products</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 bg-body-secondary py-4">
+            <h5 class="px-3">
+                Categories
+            </h5>
+            <nav class="nav justify-content-center flex-column">
+                
+                {% for item in categories %}
+                    <a href="{% url 'home' %}" class="nav-link fs-5">
+                        <i class="fas fa-angle-right"></i>
+                        {{item.title}}
+                    </a>
+                {% endfor %}
+                            
+            </nav>
 
+        </div>
+        <div class="col-md-9 py-4">
+            <div class="container-fluid">
+                <div class="row">
+
+                    {% for product in products %}
+                    <div class="col-md-4 mb-4">
+                        <div class="card">
+                            <img src="{{product.image.url}}" alt="{{product.titlea}}" class="card-img-top img-fluid">
+                            <div class="card-body">
+                                <h3 class="card-title">{{product.title}}</h3>
+                                <p class="card-text">{{product.price}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 {% block css %}
 

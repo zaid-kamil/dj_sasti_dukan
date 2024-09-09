@@ -1,0 +1,38 @@
+{% block css %}
+<style>
+    .card {
+        width: 500px;
+        width: 250px;
+    }
+
+    .card:hover {
+        background-color: rgb(242, 239, 252);
+        ;
+    }
+
+    .card-img {
+        object-fit: cover;
+        margin: 4px;
+    }
+</style>
+{% endblock css %}
+
+<div class="container">
+    <div class="row">
+
+        {% for product in products %}
+        <div class="card">
+            <img src="{{ product.image.url }}" alt="{{ product.title}}">
+            <div class="card_body">
+                <h3 class="card-title"> {{ product.title| truncatewords:4}} </h3>
+                <p class="card-price"> {{ product.price }} </p>
+                <p class="card-time"> {{ product.created_at|date:"F j, Y" }} </p>
+            </div>
+            <div class="P-2">
+                <a href="{% url 'detail' product.id %}" class="btn btn-outline-primary">View Detail</a>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>

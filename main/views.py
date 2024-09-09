@@ -3,12 +3,27 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 
+from product.models import Product, Category
+
 def logout_view(request):
     logout(request)
     return redirect('home')
 
 def home_view(request):
-    return render(request, 'home.html')
+    products = Product.objects.all()
+    categories = Category.objects.all()
+    ctx = {
+        'products': products,
+        'categories': categories
+    }
+    return render(request, 'home.html', ctx)
+
+def detail_view(request, id):
+    product = Product.objects.get(id=id)
+    ctx = {
+        'product': product
+    }
+    return render(request, 'detail.html', ctx)
 
 # seller views
 def seller_login_view(request):
