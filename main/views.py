@@ -1,8 +1,7 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
-
 from product.models import Product, Category
 
 def logout_view(request):
@@ -17,6 +16,18 @@ def home_view(request):
         'categories': categories
     }
     return render(request, 'home.html', ctx)
+
+def category_view(request,name):
+    cat = get_object_or_404(Category, slug=name)
+    products = get_list_or_404(Product, category=cat)
+    return render(
+        request, 'category_listing.html',
+        context = {
+            'products': products, 
+            'categories': Category.objects.all(),
+            'cat': cat, 
+        }
+    )
 
 def detail_view(request, id):
     product = Product.objects.get(id=id)
