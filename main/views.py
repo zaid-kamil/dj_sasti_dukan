@@ -31,8 +31,11 @@ def category_view(request,name):
 
 def detail_view(request, id):
     product = Product.objects.get(id=id)
+    # get upto 3 similar products
+    similar_products = Product.objects.filter(category=product.category).exclude(id=id).order_by('?')[:3] # order by random
     ctx = {
-        'product': product
+        'product': product,
+        'similar_products': similar_products
     }
     return render(request, 'detail.html', ctx)
 

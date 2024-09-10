@@ -1,20 +1,59 @@
 {% extends 'layout/base.html' %}
-
-
 {% block content %}
-<div class="container"></div>
-<div class="row">
-    <div class="col-md-6">
-        <img src="{{ product.image.url }}" alt="{{ product.title }}">
-    </div>
-    <div class="col-md-6">
-        <h3> {{ product.title }} </h3>
-        <p> {{ product.price }} </p>
-        <p> {{ product.created_at|date:"F j, Y" }} </p>
-        <button type="submit" class="btn btn-outline-primary">
-            Buy Now
-        </button>
+<div class="container-fluid px-0">
+    <div class="row g-0">
+        <div class="col-md-6">
+            <img src="{{product.image.url}}" alt="{{product.title}}" class="img-fluid">
+        </div>
+        <div class="col-md-6">
+            <div class="container p-5">
+                <div class="row">
+                    <div class="col">
+                        <h1 class="display-5 fw-bolder">{{product.title}}</h1>
+                        <div>
+                            By {{product.brand}}
+                        </div>
+                        <a class="text-decoration-none fs-4 " href="{% url 'category' product.category.slug %}">
+                            {{product.category}}
+                        </a>
+                        <hr class="my-3">
+                        <p class="fs-2">₹ {{product.price}}</p>
+                        <p>{{product.description}}</p>
+                        <hr class="my-3">
+                        <p class="lead">
+                            <strong>Seller:</strong> {{product.seller}}
+                        </p>
+                        <a href="#" class="btn btn-primary rounded-0">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+<div class="container-fluid py-3">
+    <div class="row">
+        <div class="col">
+            <h2>Similar Products</h2>
+        </div>
+    </div>
+    <div class="row">
+        {% for product in similar_products %}
+        <div class="col-md-2 mb-4">
+            <a href="{% url 'detail' product.id %}" class="text-decoration-none">
+                <div class="card">
+                    <img src="{{product.image.url}}" alt="{{product.titlea}}" class="card-img-top img-fluid">
+                    <div class="card-body">
+                        <h5 class="card-title">{{product.title|truncatewords:3}}</h5>
+                        <p class="card-text">{{product.price}}</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+        {% empty %}
+        <div class="col">
+            <p>No similar products found</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}
