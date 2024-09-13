@@ -1,5 +1,7 @@
 {% extends 'layout/base.html' %}
+{% load humanize %}
 {% block content %}
+<!-- product display -->
 <div class="container-fluid px-0">
     <div class="row g-0">
         <div class="col-md-6">
@@ -17,7 +19,7 @@
                             {{product.category}}
                         </a>
                         <hr class="my-3">
-                        <p class="fs-2">₹ {{product.price}}</p>
+                        <p class="fs-2">₹ {{product.price|intcomma}}</p>
                         <p>{{product.description}}</p>
                         <hr class="my-3">
                         <p class="lead">
@@ -30,6 +32,7 @@
         </div>
     </div>
 </div>
+<!-- similar products -->
 <div class="container-fluid py-3">
     <div class="row">
         <div class="col">
@@ -56,4 +59,79 @@
         {% endfor %}
     </div>
 </div>
+<div class="container-fluid py-3">
+    <div class="row">
+        <div class="col-md-12">
+            <h5 class="d-flex align-items-center gap-3">
+                Product Reviews
+
+                {% if user.is_authenticated %}
+                <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#addReview">
+                    Add your review
+                </button>
+                {% endif %}
+            </h5>
+        </div>
+
+        {% for item in reviews %}
+        <div class="col-md-12 mb-3">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="d-flex align-items-center gap-3">
+                        <i class="fas fa-user-circle fa-2x"></i>
+                        {{item.customer.username|title}}
+                    </h6>
+                    <p class="text-muted ratingbox" data-value="{{item.rating}}">
+                        {{item.rating}}
+                    </p>
+                    <p class="fs-6">
+                        {{item.content}}
+                    </p>
+                    <date class="text-muted">
+                        {{item.created_at|naturaltime}}
+                    </date>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    No Reviews Yet
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+<!-- Add Review Modal -->
+<div class="modal fade" id="addReview" tabindex="-1" aria-labelledby="addReviewlLabel" aria-hidden="true">
+    <form class="modal-dialog" action="">
+        {% csrf_token %}
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="addReviewLabel">Add your review</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                {{review_form}}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save Review</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- End of Add Review modal -->
 {% endblock content %}
+
+
+{% block js %}
+<script>
+    var ratingbox = document.querySelectorAll('.ratingbox');
+    ratingbox.forEach((item) => {
+        value = item.getAttribute('data-value');
+        item.innerHTML = '⭐'.repeat(value);
+    });
+</script>
+{% endblock js %}
