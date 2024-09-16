@@ -1,10 +1,31 @@
 {% extends 'layout/base.html' %}
-{% block head %}{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+{% endblock %}
 {% block content %}
 <div class="container py-4">
     <div class="row">
         <div class="col-md-12 bg-body-secondary">
             <h1 class="text-center">Products</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="swiper">
+            <div class="swiper-wrapper">
+
+                {% for item in slider_images %}
+                <div class="swiper-slide">
+                    <a href="{{item.link}}">
+                        <img src="{{item.image.url}}" class="img-fluid" alt="{{item.title}}">
+                    </a>
+                </div>
+                {% endfor %}
+
+            </div>
+            <div class="swiper-pagination"></div>
+            <div class="swiper-button-prev"></div>
+            <div class="swiper-button-next"></div>
         </div>
     </div>
     <div class="row">
@@ -14,11 +35,11 @@
             </h5>
             <nav class="nav justify-content-center flex-column">
                 {% for item in categories %}
-                    <a href="{% url 'category' item.slug %}" class="nav-link fs-5">
-                        <i class="fas fa-angle-right"></i>
-                        {{item.title}}
-                    </a>
-                {% endfor %}        
+                <a href="{% url 'category' item.slug %}" class="nav-link fs-5">
+                    <i class="fas fa-angle-right"></i>
+                    {{item.title}}
+                </a>
+                {% endfor %}
             </nav>
 
         </div>
@@ -27,7 +48,7 @@
                 <div class="row">
 
                     {% for product in products %}
-                        {% include 'components/product_card.html' %}
+                    {% include 'components/product_card.html' %}
                     {% empty %}
 
                     {% endfor %}
@@ -40,12 +61,28 @@
 {% endblock %}
 {% block css %}
 <style>
-    .card-img-top{
+    .card-img-top {
         height: 300px;
         object-fit: cover;
     }
 </style>
 {% endblock %}
 {% block js %}
-
+<script>
+    const swiper = new Swiper('.swiper', {
+        // Optional parameters
+        direction: 'horizontal',
+        loop: true,
+        autoplay: {
+            delay: 3000,
+        },
+        pagination: {
+            el: '.swiper-pagination',
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+</script>
 {% endblock %}

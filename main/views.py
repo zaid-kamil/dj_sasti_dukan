@@ -4,6 +4,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from product.models import Product, Category, Review
 from product.forms import ReviewForm
+from .models import SliderImage
 
 def logout_view(request):
     logout(request)
@@ -12,9 +13,12 @@ def logout_view(request):
 def home_view(request):
     products = Product.objects.all()
     categories = Category.objects.all()
+    # get latest 4 slider images
+    slider_images = SliderImage.objects.order_by('-created_at')[:4]
     ctx = {
         'products': products,
-        'categories': categories
+        'categories': categories,
+        'slider_images': slider_images,
     }
     return render(request, 'home.html', ctx)
 
