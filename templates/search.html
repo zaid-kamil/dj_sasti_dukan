@@ -1,0 +1,83 @@
+{% extends 'layout/base.html' %}
+{% block head %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+{% endblock %}
+{% block content %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Search Results</h1>
+            <p class="text-muted text-center">
+                <strong>{{products|length}} products</strong> found for "{{query}}"
+                and 
+                <strong>{{categories|length}} categories</strong> found for "{{query}}"
+            </p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 py-4">
+            <h5 class="px-3">
+                Categories
+            </h5>
+            <nav class="nav justify-content-center flex-column">
+                {% for item in categories %}
+                <a href="{% url 'category' item.slug %}" class="nav-link fs-5">
+                    <i class="fas fa-angle-right"></i>
+                    {{item.title}}
+                </a>
+                {% empty %}
+                <p class="text-muted">
+                    No categories found
+                </p>
+                {% endfor %}
+            </nav>
+
+        </div>
+        <div class="col-md-9 py-4">
+            <h5 class="px-3 text-center">
+                Products
+            </h5>
+            <div class="container-fluid">
+                <div class="row">
+
+                    {% for product in products %}
+                    <div class="container-fluid mb-3">
+                        <div class="row">
+                            <div class="col-md-2">
+                                <img src="{{product.image.url}}" class="img-fluid border border-dark rounded-3" alt="{{product.title}}">
+                            </div>
+                            <div class="col-md-10">
+                                <h3>
+                                    <a href="{% url 'detail' product.id %}">{{product.title}}</a>
+                                </h3>
+                                <p class="text-muted">{{product.description}}</p>
+                                <p class="text-muted">Price: ${{product.price}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <h5 class="text-muted text-center">
+                        No products found
+                    </h5>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block css %}
+<style>
+    .card-img-top {
+        height: 300px;
+        object-fit: cover;
+    }
+</style>
+{% endblock %}
+{% block js %}
+<script>
+
+</script>
+{% endblock %}

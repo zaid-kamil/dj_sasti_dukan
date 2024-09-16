@@ -93,3 +93,16 @@ def customer_register_view(request):
 
 def customer_forgot_pass_view(request):
     return render(request, 'accounts/customer/forgot_password.html')
+
+def search_view(request):
+    query = request.GET.get('q')
+    products = Product.objects.filter(title__icontains=query)
+    categories = Category.objects.filter(title__icontains=query)
+    return render(
+        request, 'search.html',
+        context = {
+            'products': products,
+            'categories': categories,
+            'query': query,
+        }
+    )
