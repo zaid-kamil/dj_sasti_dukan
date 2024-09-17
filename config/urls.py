@@ -19,6 +19,7 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 from main import views as mv
+from cart import views as cv
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -39,6 +40,9 @@ urlpatterns = [
     path('cat/<slug:name>', mv.category_view, name='category'),
     path('detail/<int:id>', mv.detail_view, name='detail'),
     path("__reload__/", include("django_browser_reload.urls")),
+    # cart
+    path('payment/initiate', cv.initiate_payment, name='init_payment'),
+    path('payment/callback', cv.callback, name='callback'),
 ]
 
 if settings.DEBUG:

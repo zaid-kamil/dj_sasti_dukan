@@ -17,7 +17,7 @@
                 {% for item in slider_images %}
                 <div class="swiper-slide">
                     <a href="{{item.link}}">
-                        <img src="{{item.image.url}}" class="img-fluid" alt="{{item.title}}">
+                        <img src="{{item.image.url}}" class="img-fluid slider-image" alt="{{item.title}}">
                     </a>
                 </div>
                 {% endfor %}
@@ -65,6 +65,10 @@
         height: 300px;
         object-fit: cover;
     }
+    /* .slider-image{
+        object-fit: cover;
+        width: 100%;
+    } */
 </style>
 {% endblock %}
 {% block js %}
