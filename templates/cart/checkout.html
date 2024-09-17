@@ -1,0 +1,71 @@
+{% extends 'layout/base.html' %}
+{% load humanize %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mx-auto">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-center">Order Summary</h5>
+                    <div class="d-grid">
+                        <div class="d-flex flex-column text-center">
+                            <img src="{{product.image.url}}" alt="{{product.title}}" class="img-fluid">
+                            <div class="">
+                                <h3 class="card-title">{{ product.title }}</h3>
+                            </div>
+                            
+                            <div class="d-flex justify-content-between">
+                                <p class="fw-bolder">Price</p>
+                                <p class="fs-5">₹ {{ product.price|intcomma }}</p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="fw-bolder">Quantity</p>
+                                <p class="fs-5">1</p>
+                            </div>
+                        </div>
+                        <button id="pay-btn" class="btn btn-primary">
+                            Checkout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block css %}
+    <style>
+        main{
+            display: grid;
+            place-items: center;
+            height: 100vh;
+        }
+        tr th, tr td{
+            border: none;
+        }
+    </style>
+{% endblock css %}
+    
+
+
+{% block js %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    window.onload = () => {
+        var options = {
+            key: "{{ razorpay_merchant_key }}",
+            amount: "{{ razorpay_amount }}",
+            currency: "{{ currency }}",
+            name: "Sasti Dukaan",
+            order_id: "{{ razorpay_order_id }}",
+            callback_url: "{{ callback_url }}",
+        };
+        var rzp1 = new Razorpay(options);
+        document.getElementById("pay-btn").onclick = function (e) {
+            rzp1.open();
+            e.preventDefault();
+        };
+    }
+</script>
+{% endblock js %}

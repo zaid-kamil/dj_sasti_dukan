@@ -7,8 +7,10 @@ from django.conf import settings
 from django.contrib import messages
 import requests
 import json
-from . import PaytmChecksum
+import razorpay
 import datetime
+
+razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
 
 def debugDict(d):
     print('_ _ _ '*10)
@@ -16,95 +18,32 @@ def debugDict(d):
         print(f'{key} -> {value}')
     print('_ _ _ '*10)
 
-def getTransactionToken(order:Order):
-    paytmParams = dict()
-    paytmParams["body"] = {
-        "requestType"   : "Payment",
-        "mid"           : settings.PAYTM_MID,
-        "websiteName"   : settings.PAYTM_WEBSITE,
-        "orderId"       : str(order.id),
-        "callbackUrl"   : settings.PAYTM_CALLBACK_URL,
-        "txnAmount"     : {
-            "value"     : str(order.product.price),
-            "currency"  : "INR",
-            },
-        "userInfo"  : {
-            "custId"  : str(order.user.id),
-        },
-    }
-    checksum = PaytmChecksum.generateSignature(json.dumps(paytmParams["body"]), settings.PAYTM_MK)
-    paytmParams["head"] = {
-        "signature"    : checksum
-    }
-    debugDict(paytmParams)
-    post_data = json.dumps(paytmParams)
-    
-    url = settings.PAYTM_ENVIRONMENT+"/theia/api/v1/initiateTransaction?mid="+settings.PAYTM_MID+"&orderId="+str(order.id)
-    print(url)
-    
-    response = requests.post(url, data = post_data, headers = {"Content-type": "application/json"}).json()
-    debugDict(response)
-    
-    response_str = json.dumps(response)
-    res = json.loads(response_str)
-    if res["body"]["resultInfo"]["resultStatus"]=='S':
-        token=res["body"]["txnToken"]
-    else:
-        token=""
-    print(f'Transaction Token: {token}')
-    return token
-def transactionStatus():
-    paytmParams = dict()
-    paytmParams["body"] = {
-        "mid" : settings.PAYTM_MID,
-        # Enter your order id which needs to be check status for
-        "orderId" : "order_1647237662.654877",
-    }
-    checksum = PaytmChecksum.generateSignature(json.dumps(paytmParams["body"]), settings.PAYTM_MK)
-
-    # head parameters
-    paytmParams["head"] = {
-    "signature" : checksum
-    }
-
-    # prepare JSON string for request
-    post_data = json.dumps(paytmParams)
-
-    url = settings.PAYTM_ENVIRONMENT+"/v3/order/status"
-
-    response = requests.post(url, data = post_data, headers = {"Content-type": "application/json"}).json()
-    response_str = json.dumps(response)
-    res = json.loads(response_str)
-    msg="Transaction Status Response"
-    return res['body']
 
 @login_required
 def initiate_payment(request):
     if request.method == 'POST':
         pid = request.POST.get('product_id')
         product = Product.objects.get(id=pid)
-        user = request.user
-        # create a new order
-        order = Order(
-            user=user,
-            product=product,
-            address='12/123, abc street, xyz city'
-        )
-        order.save()
-        generated_token = getTransactionToken(order)
-        if generated_token:
-            return render(request, 'cart/redirect.html', {
-                'order': order, 
-                'token': generated_token,
-                'mid': settings.PAYTM_MID,
-                'amount': product.price,
-                'order_id': order.id,
-                'env': settings.PAYTM_ENVIRONMENT,
-            })
-        else:
-            messages.error(request, 'Payment failed')
-            return redirect(request.META.get('HTTP_REFERER')) # redirect to the same page
-        
+        currency = 'INR'
+        amount = int(product.price * 100) # amount in paisa
+        # create a razorpay order
+        razorpay_order = razorpay_client.order.create({
+            'amount': amount,
+            'currency': currency,
+            'payment_capture': '1' # auto capture
+        })
+        razorpay_order_id = razorpay_order['id']
+        callback_url = request.build_absolute_uri('/payment/callback')
+        request.session['product_id'] = pid
+        ctx = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+            'razorpay_amount': amount,
+            'currency': currency,
+            'callback_url': callback_url,
+            'product': product
+        }
+        return render(request, 'cart/checkout.html', ctx)
     messages.error(request, 'Invalid request')  
     return redirect('home')  
 
@@ -112,40 +51,35 @@ def initiate_payment(request):
 @csrf_exempt
 def callback(request):
     if request.method == 'POST':
-        received_data = dict(request.POST)
-        paytm_params = {}
-        print('_ _ _ '*10)
-        print('Received data')
-        for key, value in received_data.items():
-            print(f'{key} -> {value[0]}')
-        print('_ _ _ '*10)
-        paytm_checksum = received_data['checksumhash'][0]
-        for key, value in received_data.items():
-            if key == 'checksumhash':
-                continue
-            paytm_params[key] = str(value[0])
-        
-        # verify the checksum
-        is_valid_checksum = PaytmChecksum.verify_checksum(paytm_params, 
-                                            settings.PAYTM_MK, 
-                                            paytm_checksum)
-        if is_valid_checksum:
-            if paytm_params['RESPCODE'] == '01':
-                messages.success(request, 'Payment successful')
-                request.session['payment_info'] = paytm_params
-                # update the order
-                order_id = paytm_params['ORDERID']
-                order = Order.objects.get(id=order_id)
-                order.is_paid = True
+        # get the required parameters from post request.
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+        if result is None:
+            try:
+                product = Product.objects.get(id=request.session['product_id'])
+                order = Order(
+                    user=request.user,
+                    product=product,
+                    address='12/123, abc street, xyz city',
+                    is_paid = True,
+                )
                 order.save()
-                return redirect('success')
-            else:
-                messages.error(request, f'Payment failed due to {paytm_params["RESPMSG"]}')
-                return redirect('failed')
+                razorpay_client.payment.capture(payment_id, order.product.price)
+                return render(request, 'cart/success.html')
+            except Exception as e:
+                messages.error(request, 'Payment failed')
+                return render(request, 'cart/failure.html')
         else:
-            messages.error(request, f'Invalid checksum')
-            return redirect('home')
-    
+            messages.error(request, 'Invalid payment details')
+            return render(request, 'cart/failure.html')
     # if this url is accessed directly
     messages.error(request, 'Invalid request')
     return redirect('home')
