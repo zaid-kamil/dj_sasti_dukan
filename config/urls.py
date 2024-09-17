@@ -43,6 +43,8 @@ urlpatterns = [
     # cart
     path('payment/initiate', cv.initiate_payment, name='init_payment'),
     path('payment/callback', cv.callback, name='callback'),
+    path('success/', cv.success_view, name='success'),
+    path('failure/', cv.failure_view, name='failure'),
 ]
 
 if settings.DEBUG:

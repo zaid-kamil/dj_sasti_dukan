@@ -1,0 +1,14 @@
+{
+    "mid": "MID HERE",
+    "websiteName": "WEBSTAGING",
+    "orderId": "ORDERIDHERE",
+    "txnAmount": {
+        "value": "10.00",
+        "currency": "INR"
+    },
+    "userInfo": {
+        "custId": "CUSTOMERID_HERE"
+    },
+    "callbackUrl": "https://securegw-stage.paytm.in/theia/paytmCallback?ORDER_ID=ORDERID",
+    "requestType": "Payment"
+}

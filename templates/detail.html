@@ -25,14 +25,16 @@
                         <p class="lead">
                             <strong>Seller:</strong> {{product.seller}}
                         </p>
-                        <a href="#" class="btn btn-primary rounded-0">
-                            <i class="fas fa-shopping-cart"></i> 
-                        </a>
-                        <form action="{% url 'init_payment' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="product_id" value="{{product.id}}">
-                            <button class="btn btn-outline-danger rounded-0">Buy Now</button>
-                        </form>
+                        <div class="d-flex gap-3">
+                            <a href="#" class="btn btn-primary rounded-0 btn-large">
+                                <i class="fas fa-shopping-cart"></i> 
+                            </a>
+                            <form action="{% url 'init_payment' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="product_id" value="{{product.id}}">
+                                <button class="btn btn-outline-danger btn-lg rounded-0">Buy Now</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

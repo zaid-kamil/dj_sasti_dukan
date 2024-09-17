@@ -158,3 +158,8 @@ load_dotenv()
 # load the variables from .env file
 PAYTM_MID = os.getenv('PAYTM_MID')
 PAYTM_MK = os.getenv('PAYTM_MK')
+PAYTM_WEBSITE = os.getenv('PAYTM_WEBSITE')
+PAYTM_CHANNEL_ID = os.getenv('PAYTM_CHANNEL_ID')
+PAYTM_INDUSTRY_TYPE_ID = os.getenv('PAYTM_INDUSTRY_TYPE_ID')
+PAYTM_CALLBACK_URL = os.getenv('PAYTM_CALLBACK_URL')
+PAYTM_ENVIRONMENT = os.getenv('PAYTM_ENVIRONMENT')
