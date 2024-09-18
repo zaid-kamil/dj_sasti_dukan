@@ -3,6 +3,5 @@ django-filter
 django-browser-reload
 crispy-bootstrap5
 django-allauth
-stripe
-paytm-pg
 python-dotenv
+razorpay

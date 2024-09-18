@@ -1,23 +1,15 @@
 from django.shortcuts import render, redirect
-from product.models import Product
 from .models import Order, Cart, CartItem
+from product.models import Product
+
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 from django.contrib import messages
-import requests
-import json
+from django.conf import settings
 import razorpay
-import datetime
 
-razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, settings.RAZOR_KEY_SECRET))
-
-def debugDict(d):
-    print('_ _ _ '*10)
-    for key, value in d.items():
-        print(f'{key} -> {value}')
-    print('_ _ _ '*10)
-
+razorpay_client = razorpay.Client(auth=(settings.RAZOR_KEY_ID, 
+                                        settings.RAZOR_KEY_SECRET))
 
 @login_required
 def initiate_payment(request):
@@ -30,7 +22,7 @@ def initiate_payment(request):
         razorpay_order = razorpay_client.order.create({
             'amount': amount,
             'currency': currency,
-            'payment_capture': '1' # auto capture
+            'payment_capture': '0' # auto capture
         })
         razorpay_order_id = razorpay_order['id']
         callback_url = request.build_absolute_uri('/payment/callback')
@@ -62,7 +54,8 @@ def callback(request):
             'razorpay_signature': signature
         }
         result = razorpay_client.utility.verify_payment_signature(params_dict)
-        if result is None:
+        print(result)
+        if result:
             try:
                 product = Product.objects.get(id=request.session['product_id'])
                 order = Order(
@@ -72,10 +65,10 @@ def callback(request):
                     is_paid = True,
                 )
                 order.save()
-                razorpay_client.payment.capture(payment_id, order.product.price)
+                razorpay_client.payment.capture(payment_id, int(order.product.price*100))
                 return render(request, 'cart/success.html')
-            except Exception as e:
-                messages.error(request, 'Payment failed')
+            except:
+                messages.error(request, 'Failed to save order')
                 return render(request, 'cart/failure.html')
         else:
             messages.error(request, 'Invalid payment details')

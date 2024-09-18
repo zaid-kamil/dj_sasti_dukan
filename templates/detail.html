@@ -27,7 +27,7 @@
                         </p>
                         <div class="d-flex gap-3">
                             <a href="#" class="btn btn-primary rounded-0 btn-large">
-                                <i class="fas fa-shopping-cart"></i> 
+                                <i class="fas fa-shopping-cart"></i>
                             </a>
                             <form action="{% url 'init_payment' %}" method="post">
                                 {% csrf_token %}
@@ -76,7 +76,13 @@
 
                 {% if user.is_authenticated %}
                 <button type="button" class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#addReview">
+
+                    {% if has_reviewed %}
+                    Edit your review
+                    {% else %}
                     Add your review
+                    {% endif %}
+
                 </button>
                 {% endif %}
             </h5>
@@ -114,8 +120,15 @@
     </div>
 </div>
 <!-- Add Review Modal -->
+
+
 <div class="modal fade" id="addReview" tabindex="-1" aria-labelledby="addReviewlLabel" aria-hidden="true">
-    <form class="modal-dialog" action="">
+
+    {% if has_reviewed %}
+    <form class="modal-dialog" action="{% url 'edit_review' product.id %}" method="post">
+    {% else %}
+    <form class="modal-dialog" action="{% url 'add_review' product.id %}" method="post">
+        {% endif %}
         {% csrf_token %}
         <div class="modal-content">
             <div class="modal-header">
@@ -126,7 +139,7 @@
                 {{review_form}}
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save Review</button>
+                <button class="btn btn-primary">Save Review</button>
             </div>
         </div>
     </form>

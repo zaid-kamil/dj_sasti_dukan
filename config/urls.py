@@ -45,6 +45,10 @@ urlpatterns = [
     path('payment/callback', cv.callback, name='callback'),
     path('success/', cv.success_view, name='success'),
     path('failure/', cv.failure_view, name='failure'),
+
+    # review
+    path('review/add/<int:id>', mv.add_review, name='add_review'),
+    path('review/edit/<int:id>', mv.edit_review, name='edit_review'),
 ]
 
 if settings.DEBUG:
