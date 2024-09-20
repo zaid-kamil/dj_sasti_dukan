@@ -28,6 +28,7 @@ urlpatterns = [
     path('login/customer', mv.customer_login_view, name='customer_login'),
     path('register/customer', mv.customer_register_view, name='customer_register'),
     path('forgot/customer', mv.customer_forgot_pass_view, name='customer_forgot_pass'),
+    # path to dashboar -> mv.dasboard_customer
     # seller
     path('login/seller', mv.seller_login_view, name='seller_login'),
     path('register/seller', mv.seller_register_view, name='seller_register'),

@@ -96,14 +96,12 @@ def view_cart(request):
 @login_required
 def add_to_cart(request, id):
     product = Product.objects.get(id=id)
-    cart = Cart.objects.get(user=request.user)
-    if not cart:
-        # create a new cart for first time entry
+    try:
+        cart = Cart.objects.get(user=request.user)
+        print("Cart already exists")
+    except:
         cart = Cart.objects.create(user=request.user)
         print("New cart created")
-    else:
-        print("Cart already exists")
-    
     # if product exists in cart increase the quantity
     if CartItem.objects.filter(product=product, cart=cart).first():
         item = CartItem.objects.get(product=product, cart=cart)

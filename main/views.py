@@ -118,7 +118,6 @@ def search_view(request):
         }
     )
 
-
 def add_review(request, id):
     product = Product.objects.get(id=id)
     form = ReviewForm(request.POST)
@@ -141,3 +140,9 @@ def edit_review(request, id):
     else:
         messages.error(request, 'Invalid Review Details')
     return redirect('detail', id=review.product.id)
+
+# dashboard_customer
+# import order, review
+# inside function get all orders and reviews
+# by filter user=request.user
+# then create a page and put these in context
