@@ -26,7 +26,7 @@
                             <strong>Seller:</strong> {{product.seller}}
                         </p>
                         <div class="d-flex gap-3">
-                            <a href="#" class="btn btn-primary rounded-0 btn-large">
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary rounded-0 btn-large">
                                 <i class="fas fa-shopping-cart"></i>
                             </a>
                             <form action="{% url 'init_payment' %}" method="post">

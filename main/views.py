@@ -5,6 +5,7 @@ from django.contrib import messages
 from product.models import Product, Category, Review
 from product.forms import ReviewForm
 from .models import SliderImage
+from django.contrib.auth.decorators import login_required
 
 def logout_view(request):
     logout(request)
@@ -42,7 +43,9 @@ def detail_view(request, id):
     reviews = Review.objects.filter(product=product).order_by('-created_at') # reverse order
     
     # if user has review product, then allow him to edit
-    review = Review.objects.filter(product=product, customer=request.user).first()
+    review = None
+    if request.user.is_authenticated:
+        review = Review.objects.filter(product=product, customer=request.user).first()
     if review:
         review_form = ReviewForm(instance=review)
     else:

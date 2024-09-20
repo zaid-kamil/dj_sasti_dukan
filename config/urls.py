@@ -40,7 +40,7 @@ urlpatterns = [
     path('cat/<slug:name>', mv.category_view, name='category'),
     path('detail/<int:id>', mv.detail_view, name='detail'),
     path("__reload__/", include("django_browser_reload.urls")),
-    # cart
+    # checkout
     path('payment/initiate', cv.initiate_payment, name='init_payment'),
     path('payment/callback', cv.callback, name='callback'),
     path('success/', cv.success_view, name='success'),
@@ -49,6 +49,12 @@ urlpatterns = [
     # review
     path('review/add/<int:id>', mv.add_review, name='add_review'),
     path('review/edit/<int:id>', mv.edit_review, name='edit_review'),
+    # cart
+    path('cart/view', cv.view_cart, name='cart_view'),
+    path('cart/add/<int:id>', cv.add_to_cart, name='add_to_cart'),
+    path('cart/remove/<int:id>', cv.remove_from_cart, name='remove_from_cart'),
+    path('cart/checkout', cv.cart_checkout, name='cart_checkout'),
+    path('cart/callback', cv.cart_callback, name='cart_callback'),
 ]
 
 if settings.DEBUG:

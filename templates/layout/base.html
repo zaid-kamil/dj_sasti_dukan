@@ -1,3 +1,4 @@
+{% load cart %}
 <!doctype html>
 <html lang="en">
 
@@ -59,20 +60,27 @@
                         </button>
                     </form>
                     <ul class="navbar-nav">
-                        
                         {% if user.is_authenticated %}
+                        {% cart_count as cart_items %}
+                        <li class="nav-item">
+                            <a href="{% url 'cart_view' %}" class="nav-link">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span class="badge bg-danger">{{ cart_items }}</span>
+                            </a>
+                        </li>
                         <li class="nav-item">
                             <a href="{% url 'logout' %}" class="nav-link">
                                 <i class="fas fa-sign-out-alt text-danger"></i>
                             </a>
-                        {% else %}    
+                        </li>
+                        {% else %}
                         <li class="nav-item">
                             <a href="" class="nav-link" data-bs-toggle="modal" data-bs-target="#showLogin">
                                 <i class="fas fa-user"></i>
                             </a>
                         </li>
                         {% endif %}
-                            
+
                     </ul>
                 </div>
             </div>

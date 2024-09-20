@@ -84,3 +84,54 @@ def success_view(request):
 def failure_view(request):
     order = Order.objects.get(id=request.session['payment_info']['ORDERID'])
     return render(request, 'cart/failure.html', {'order': order})
+
+@login_required
+def view_cart(request):
+    cart = Cart.objects.get(user=request.user)
+    if not cart:
+        return render(request, 'cart/view.html', {'items': []})
+    items = CartItem.objects.filter(cart=cart)
+    return render(request, 'cart/view.html', {'items': items})
+
+@login_required
+def add_to_cart(request, id):
+    product = Product.objects.get(id=id)
+    cart = Cart.objects.get(user=request.user)
+    if not cart:
+        # create a new cart for first time entry
+        cart = Cart.objects.create(user=request.user)
+        print("New cart created")
+    else:
+        print("Cart already exists")
+    
+    # if product exists in cart increase the quantity
+    if CartItem.objects.filter(product=product, cart=cart).first():
+        item = CartItem.objects.get(product=product, cart=cart)
+        item.quantity += 1
+        item.save()
+        messages.success(request, 'Product quantity increased')
+    else:
+        item = CartItem.objects.create(product=product, cart=cart)
+        messages.success(request, 'Product added to cart')
+    return redirect(request.META.get('HTTP_REFERER'))
+
+@login_required
+def remove_from_cart(request, id):
+    product = Product.objects.get(id=id)
+    cart = Cart.objects.get(user=request.user)
+    if not cart:
+        return redirect('home')
+    item = CartItem.objects.filter(product=product, cart=cart).first()
+    if item:
+        item.delete()
+        messages.success(request, 'Product removed from cart')
+    return redirect('cart_view')
+    
+
+@login_required
+def cart_checkout(request):
+    pass
+
+@login_required
+def cart_callback(request):
+    pass
