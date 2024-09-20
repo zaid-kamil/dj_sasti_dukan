@@ -1,6 +1,56 @@
 {% extends 'layout/base.html' %}
 {% load humanize %}
 {% block content %}
+
+{% if from_cart %}
+<div class="container my-5">
+    <div class="row">
+        <h5 class="text-center">Confirm Order</h5>
+        <div class="table-responsive-sm">
+            <table class="table table-hover table-borderless align-middle">
+                <thead class="border border-primary">
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                    </tr>
+                </thead>
+                <tbody class="table-group-divider">
+
+                    {% for item in items %}
+                    <tr class="border border-primary">
+                        <td>
+                            <div class="d-flex align-items-center">
+                                <img src="{{ item.product.image.url }}" alt="{{ item.product.title }}"
+                                    class="img-thumbnail" style="width: 100px; height: 100px;">
+                                <div class="ms-3">
+                                    <h5 class="card-title">{{ item.product.title }}</h5>
+                                    <p class="card-text">{{ item.product.category }}</p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="fs-3">₹ {{ item.product.price|intcomma }}</td>
+                        <td class="fs-3">{{ item.quantity }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="border border-primary">
+                        <td colspan="2" class="fw-bold fs-4">Total</td>
+                        <td class="fw-bold fs-4">₹ {{ total|intcomma }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="d-grid">
+                <button id="pay-btn" class="btn btn-primary btn-lg">
+                    Checkout to Pay
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% else %}
 <div class="container">
     <div class="row">
         <div class="col-md-4 mx-auto">
@@ -13,7 +63,7 @@
                             <div class="">
                                 <h3 class="card-title">{{ product.title }}</h3>
                             </div>
-                            
+
                             <div class="d-flex justify-content-between">
                                 <p class="fw-bolder">Price</p>
                                 <p class="fs-5">₹ {{ product.price|intcomma }}</p>
@@ -32,21 +82,18 @@
         </div>
     </div>
 </div>
+{% endif %}
+
 {% endblock content %}
 
 {% block css %}
-    <style>
-        main{
-            display: grid;
-            place-items: center;
-            height: 100vh;
-        }
-        tr th, tr td{
-            border: none;
-        }
-    </style>
+<style>
+
+
+
+</style>
 {% endblock css %}
-    
+
 
 
 {% block js %}

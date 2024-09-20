@@ -1,0 +1,97 @@
+{% extends 'layout/base.html' %}
+{% load humanize %}
+{% block head %}
+
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row my-3 mx-2">
+        <div class="col-md-8 mx-auto my-2">
+            <div class="card">
+                <img class="card-img-top" src="https://picsum.photos/500/50" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Your Orders</h4>
+                    <p class="card-text">
+                        You can view your orders here
+                    </p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for order in orders %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>
+                                <b>
+                                    {{order.product}}
+                                </b>
+                            </span>
+                            <span class="ml-auto">
+                                {{order.product.price}}
+                            </span>
+                            <span>
+                                {{order.quantity}}
+                            </span>
+                            <span>
+                                {{order.ordered_at|naturaltime }}
+                            </span>
+                            <a href="#" class="btn btn-primary">View</a>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No orders</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="row my-3 mx-2">
+        
+        <div class="col-md-8 mx-auto my-2">
+            <div class="card">
+                <img class="card-img-top" src="https://picsum.photos/500/50" alt="Card image cap">
+                <div class="card-body">
+                    <h4 class="card-title">Your Review</h4>
+                    <p class="card-text">
+                        You can view your reviews
+                    </p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for review in reviews %}
+                    <li class="list-group-item">
+                        <div class="d-flex justify-content-start align-items-center">
+                            <span>
+                                <b>
+                                    <a href="{% url 'detail' review.product.id %}" class="nav-link">
+                                        {{review.product}}
+                                    </a>
+                                </b>
+                            </span>
+                            <span class="ms-3">
+                                {{review.content}}
+                            </span>
+                            <a href="#" class="btn btn-danger ms-auto">Delete</a>
+                        </div>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item">No orders</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+
+
+{% block css %}
+
+{% endblock %}
+
+
+
+{% block js %}
+
+{% endblock %}

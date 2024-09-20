@@ -4,12 +4,7 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 {% endblock %}
 {% block content %}
-<div class="container py-4">
-    <div class="row">
-        <div class="col-md-12">
-            <h1 class="text-center">Products</h1>
-        </div>
-    </div>
+<div class="container-fluid">
     <div class="row">
         <div class="swiper">
             <div class="swiper-wrapper">
@@ -29,21 +24,30 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3 bg-body-secondary py-4">
+        <div class="col-md-12">
+            <h1 class="text-center">Saste Products</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3 col-lg-2 py-4">
             <h5 class="px-3">
-                Categories
+                Product Categories
             </h5>
             <nav class="nav justify-content-center flex-column">
                 {% for item in categories %}
-                <a href="{% url 'category' item.slug %}" class="nav-link fs-5">
-                    <i class="fas fa-angle-right"></i>
-                    {{item.title}}
-                </a>
+                <div class="card mb-3">
+                    <div class="card-body p-1">
+                        <a href="{% url 'category' item.slug %}" class="nav-link fw-bold">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            {{item.title}}
+                        </a>
+                    </div>
+                </div>
                 {% endfor %}
             </nav>
 
         </div>
-        <div class="col-md-9 py-4">
+        <div class="col-md-9 col-lg-10 py-4">
             <div class="container-fluid">
                 <div class="row">
 
@@ -61,14 +65,10 @@
 {% endblock %}
 {% block css %}
 <style>
-    .card-img-top {
-        height: 300px;
-        object-fit: cover;
-    }
-    /* .slider-image{
+    .slider-image {
         object-fit: cover;
         width: 100%;
-    } */
+    }
 </style>
 {% endblock %}
 {% block js %}

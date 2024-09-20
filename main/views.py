@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User, Group
-from django.contrib import messages
 from product.models import Product, Category, Review
+from cart.models import Order, Cart, CartItem
+from django.contrib import messages
 from product.forms import ReviewForm
 from .models import SliderImage
 from django.contrib.auth.decorators import login_required
@@ -141,8 +142,22 @@ def edit_review(request, id):
         messages.error(request, 'Invalid Review Details')
     return redirect('detail', id=review.product.id)
 
-# dashboard_customer
-# import order, review
-# inside function get all orders and reviews
-# by filter user=request.user
-# then create a page and put these in context
+@login_required
+def dashboard_selection_view(request):
+    if request.user.groups.filter(name='seller').exists():
+        return redirect('sdashboard')
+    else:
+        return redirect('cdashboard')
+
+@login_required
+def customer_dashboard_view(request):
+    orders = Order.objects.filter(user=request.user)
+    reviews = Review.objects.filter(customer=request.user)
+    
+    return render(request, 'accounts/customer/dashboard.html', {'orders': orders, 'reviews': reviews})
+
+@login_required
+def seller_dashboard_view(request):
+    products = Product.objects.filter(seller=request.user)
+    orders = Order.objects.filter(product__in=products)
+    return render(request, 'accounts/seller/dashboard.html', {'products': products, 'orders': orders})

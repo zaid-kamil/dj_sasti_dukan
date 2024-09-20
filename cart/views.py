@@ -87,11 +87,35 @@ def failure_view(request):
 
 @login_required
 def view_cart(request):
-    cart = Cart.objects.get(user=request.user)
-    if not cart:
+    try:
+        cart = Cart.objects.get(user=request.user)
+        items = CartItem.objects.filter(cart=cart)
+        total = 0
+        for item in items:
+            total += item.product.price * item.quantity
+        if request.method == 'POST':
+            currency = 'INR'
+            razorpay_order = razorpay_client.order.create({
+                'amount': int(total * 100),
+                'currency': currency,
+                'payment_capture': '0'
+            })
+            razorpay_order_id = razorpay_order['id']
+            callback_url = request.build_absolute_uri('/cart/callback')
+            ctx = {
+                'razorpay_order_id': razorpay_order_id,
+                'razorpay_merchant_key': settings.RAZOR_KEY_ID,
+                'razorpay_amount': int(total * 100),
+                'currency': currency,
+                'callback_url': callback_url,
+                'items': items,
+                'total': total,
+                'from_cart': True
+            }
+            return render(request, 'cart/checkout.html', ctx)
+        return render(request, 'cart/view.html', {'items': items, 'total': total})
+    except:
         return render(request, 'cart/view.html', {'items': []})
-    items = CartItem.objects.filter(cart=cart)
-    return render(request, 'cart/view.html', {'items': items})
 
 @login_required
 def add_to_cart(request, id):
@@ -127,9 +151,47 @@ def remove_from_cart(request, id):
     
 
 @login_required
-def cart_checkout(request):
-    pass
-
-@login_required
+@csrf_exempt
 def cart_callback(request):
-    pass
+    if request.method == 'POST':
+        # get the required parameters from post request.
+        payment_id = request.POST.get('razorpay_payment_id', '')
+        razorpay_order_id = request.POST.get('razorpay_order_id', '')
+        signature = request.POST.get('razorpay_signature', '')
+
+        params_dict = {
+            'razorpay_order_id': razorpay_order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+        result = razorpay_client.utility.verify_payment_signature(params_dict)
+        print(result)
+        if result:
+            # try:
+                cart = Cart.objects.get(user=request.user)
+                items = CartItem.objects.filter(cart=cart)
+                total = 0
+                for item in items:
+                    total += item.product.price * item.quantity
+                    Order.objects.create(
+                        user = request.user,
+                        product = item.product,
+                        quantity = item.quantity,
+                        is_paid = True,
+                        address = '12/123, abc street, xyz city'
+                    )
+                razorpay_client.payment.capture(payment_id, int(total*100))
+                # destroy the cartitem and cart
+                items.delete()
+                cart.delete()
+
+                return render(request, 'cart/success.html')
+            # except:
+            #     messages.error(request, 'Failed to save order')
+            #     return render(request, 'cart/failure.html')
+        else:
+            messages.error(request, 'Invalid payment details')
+            return render(request, 'cart/failure.html')
+    # if this url is accessed directly
+    messages.error(request, 'Invalid request')
+    return redirect('home')

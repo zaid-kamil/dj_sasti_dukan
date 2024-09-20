@@ -28,12 +28,15 @@ urlpatterns = [
     path('login/customer', mv.customer_login_view, name='customer_login'),
     path('register/customer', mv.customer_register_view, name='customer_register'),
     path('forgot/customer', mv.customer_forgot_pass_view, name='customer_forgot_pass'),
-    # path to dashboar -> mv.dasboard_customer
+
     # seller
     path('login/seller', mv.seller_login_view, name='seller_login'),
     path('register/seller', mv.seller_register_view, name='seller_register'),
     path('forgot/seller', mv.seller_forgot_pass_view, name='seller_forgot_pass'),
     # common to both
+    path('dashboard', mv.dashboard_selection_view, name='dashboard'),
+    path('dashboard/customer', mv.customer_dashboard_view, name='cdashboard'),
+    path('dashboard/seller', mv.seller_dashboard_view, name='sdashboard'),
     path('logout', mv.logout_view, name='logout'),
     # index
     path('', mv.home_view, name='home'),
@@ -54,7 +57,6 @@ urlpatterns = [
     path('cart/view', cv.view_cart, name='cart_view'),
     path('cart/add/<int:id>', cv.add_to_cart, name='add_to_cart'),
     path('cart/remove/<int:id>', cv.remove_from_cart, name='remove_from_cart'),
-    path('cart/checkout', cv.cart_checkout, name='cart_checkout'),
     path('cart/callback', cv.cart_callback, name='cart_callback'),
 ]
 

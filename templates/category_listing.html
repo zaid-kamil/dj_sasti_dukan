@@ -1,34 +1,42 @@
 {% extends 'layout/base.html' %}
 {% block head %}{% endblock %}
 {% block content %}
-<div class="container py-4">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-12 bg-body-secondary">
+        <div class="col-md-12">
             <h1 class="text-center">
                 {{cat.title}}'s' Products
             </h1>
         </div>
     </div>
     <div class="row">
-        <div class="col-md-3 bg-body-secondary py-4">
+        <div class="col-md-3 col-lg-2 py-4">
             <h5 class="px-3">
-                Categories
+                Product Categories
             </h5>
             <nav class="nav justify-content-center flex-column">
-                <a href="{% url 'home' %}" class="nav-link fs-5">
-                    <i class="fas fa-angle-right"></i>
-                    All
-                </a>
+                <div class="card mb-3">
+                    <div class="card-body p-1">
+                        <a href="{% url 'home' %}" class="nav-link fw-bold">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            All Categories
+                        </a>
+                    </div>
+                </div>
                 {% for item in categories %}
-                    <a href="{% url 'category' item.slug %}" class="nav-link fs-5">
-                        <i class="fas fa-angle-right"></i>
-                        {{item.title}}
-                    </a>
-                {% endfor %}        
+                <div class="card mb-3">
+                    <div class="card-body p-1">
+                        <a href="{% url 'category' item.slug %}" class="nav-link fw-bold">
+                            <i class="fas fa-arrow-right me-2"></i>
+                            {{item.title}}
+                        </a>
+                    </div>
+                </div>
+                {% endfor %}
             </nav>
 
         </div>
-        <div class="col-md-9 py-4">
+        <div class="col-md-9 col-lg-10 py-4">
             <div class="container-fluid">
                 <div class="row">
 
