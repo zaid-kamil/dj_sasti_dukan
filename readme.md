@@ -21,3 +21,7 @@ what should you study next in django
 - email sending
 - django rest framework
 - celery (task queue)
+
+
+![image](https://github.com/user-attachments/assets/a6ecd59f-5fd7-4199-9537-f54ed83ce974)
+![image](https://github.com/user-attachments/assets/09a3e9be-2cfd-4976-81a8-b28230f18808)
